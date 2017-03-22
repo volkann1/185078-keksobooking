@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Анна Волкова](https://up.htmlacademy.ru/javascript/9/user/185078).
-* Наставник: `Неизвестно`.
+* Наставник: Игорь Антонов.
 
 ---
 
