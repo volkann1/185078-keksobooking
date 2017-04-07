@@ -652,10 +652,14 @@ select option:hover {
     margin-top: 15px;
 }
 
-.rounded {
+.rounded  {
     border-radius: 50%;
 }
 
 .hidden {
   display: none;
+}
+
+.notice__form .invalid {
+  border-color:#ff6547;
 }
