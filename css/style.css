@@ -659,3 +659,7 @@ select option:hover {
 .hidden {
   display: none;
 }
+
+.notice__form .invalid {
+  border-color:#ff6547;
+}
