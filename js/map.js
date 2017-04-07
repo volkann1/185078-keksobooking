@@ -1,5 +1,7 @@
 'use strict';
-var arrayCopy = [];
+var arrCopy = [];
+var ESC_KEY_CODE = 27;
+var ENTER_KEY_CODE = 13;
 var FEATURES = [
   'wifi',
   'dishwasher',
@@ -28,6 +30,12 @@ var OFFER_TYPE = [
   'bungalo'
 ];
 
+var OFFER_TYPE_OBJECT = {
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+
 var HOURS = ['12:00', '13:00', '14:00'];
 
 var offers = makeOffersDescriptions(8);
@@ -35,38 +43,80 @@ var fragment = document.createDocumentFragment();
 var pinMap = document.querySelector('.tokyo__pin-map');
 var lodgeTemplate = document.querySelector('#lodge-template').content;
 var offerDialog = document.querySelector('#offer-dialog');
-var newOfferDialogElement = createOfferDialog(offers[0]);
+var dialogClose = offerDialog.querySelector('.dialog__close');
+
+var onButtonClickCloseOfferDialog = function (evt) {
+  evt.preventDefault();
+  hideOfferDialog();
+  deactivatePins();
+  removeHandlersOnOfferDialog();
+};
+var onEscKeydownCloseOfferDialog = function (evt) {
+  if (isCertainKeyDown(evt, ESC_KEY_CODE)) {
+    hideOfferDialog();
+    deactivatePins();
+    removeHandlersOnOfferDialog();
+  }
+};
+var onEnterKeydownCloseOfferDialog = function (evt) {
+  if (isCertainKeyDown(evt, ENTER_KEY_CODE)) {
+    evt.preventDefault();
+    hideOfferDialog();
+    deactivatePins();
+    removeHandlersOnOfferDialog();
+  }
+};
+
+function deactivatePins() {
+  for (var i = 0; i < pins.length; i++) {
+    if (pins[i].classList.contains('pin--active')) {
+      pins[i].classList.remove('pin--active');
+    }
+  }
+}
+
+function showOfferDialog() {
+  offerDialog.classList.remove('hidden');
+}
+
+function hideOfferDialog() {
+  offerDialog.classList.add('hidden');
+}
+
+function getObjectPropertyByKey(obj, key) {
+  return obj[key];
+}
 
 function makeArrayOfNumbers(number) {
-  var array = [];
+  var arr = [];
   for (var i = 0; i < number; i++) {
-    array[i] = i + 1;
+    arr[i] = i + 1;
   }
-  return array;
+  return arr;
 }
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getRandomProperty(array) {
-  return array[getRandomNumber(0, array.length - 1)];
+function getRandomProperty(arr) {
+  return arr[getRandomNumber(0, arr.length - 1)];
 }
 
-function getAndDeleteRandomProperty(array) {
-  var index = getRandomNumber(0, array.length - 1);
-  var item = array[index];
-  array.splice(index, 1);
+function getAndDeleteRandomProperty(arr) {
+  var index = getRandomNumber(0, arr.length - 1);
+  var item = arr[index];
+  arr.splice(index, 1);
   return item;
 }
 
-function generateArray(array) {
+function generateArray(arr, minLength, maxLength) {
   var newArray = [];
-  arrayCopy = array.slice();
-  for (var i = 0; i < getRandomNumber(0, arrayCopy.length); i++) {
-    var index = getRandomNumber(0, arrayCopy.length - 1);
-    newArray[i] = arrayCopy[index];
-    arrayCopy.splice(index, 1);
+  arrCopy = arr.slice();
+  for (var i = 0; i < getRandomNumber(minLength, maxLength); i++) {
+    var index = getRandomNumber(0, arrCopy.length - 1);
+    newArray[i] = arrCopy[index];
+    arrCopy.splice(index, 1);
   }
   return newArray;
 }
@@ -83,13 +133,13 @@ function makeOffersDescriptions(numberOfOffers) {
     offerDescription.offer = {};
     offerDescription.offer.title = getAndDeleteRandomProperty(TITLE);
     offerDescription.offer.address = offerDescription.location.x + ', ' + offerDescription.location.y;
-    offerDescription.offer.price = getRandomNumber(1000, 1000000);
+    offerDescription.offer.price = getRandomNumber(10, 10000) * 100;
     offerDescription.offer.type = getRandomProperty(OFFER_TYPE);
     offerDescription.offer.rooms = getRandomNumber(1, 5);
     offerDescription.offer.guests = getRandomNumber(1, 5);
     offerDescription.offer.checkin = getRandomProperty(HOURS);
     offerDescription.offer.checkout = getRandomProperty(HOURS);
-    offerDescription.offer.features = generateArray(FEATURES);
+    offerDescription.offer.features = generateArray(FEATURES, 1, 6);
     offerDescription.offer.description = '';
     offerDescription.offer.photos = [];
     offerDescriptionList[i] = offerDescription;
@@ -101,6 +151,7 @@ function createPin(offer) {
   var pin = document.createElement('div');
   pin.innerHTML = '<img src="' + offer.author.avatar + '" style = "max-width:38px;">';
   pin.classList.add('pin');
+  pin.tabIndex = '0';
   pin.style.left = offer.location.x + 28 + 'px';
   pin.style.top = offer.location.y + 75 + 'px';
   return pin;
@@ -112,14 +163,7 @@ function createOfferDialog(offerObject) {
   newOfferDialog.querySelector('.lodge__title').textContent = offerObject.offer.title;
   newOfferDialog.querySelector('.lodge__address').textContent = offerObject.offer.address;
   newOfferDialog.querySelector('.lodge__price').textContent = offerObject.offer.price + '₽/ночь';
-  if (offerObject.offer.type === 'flat') {
-    newOfferDialog.querySelector('.lodge__type').textContent = 'Квартира';
-  } else
-  if (offerObject.offer.type === 'bungalo') {
-    newOfferDialog.querySelector('.lodge__type').textContent = 'Бунгало';
-  } else {
-    newOfferDialog.querySelector('.lodge__type').textContent = 'Дом';
-  }
+  newOfferDialog.querySelector('.lodge__type').textContent = getObjectPropertyByKey(OFFER_TYPE_OBJECT, offerObject.offer.type);
   newOfferDialog.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + offerObject.offer.guests + ' гостей в ' + offerObject.offer.rooms + ' комнатах';
   newOfferDialog.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + offerObject.offer.checkin + ', выезд до ' + offerObject.offer.checkout;
 
@@ -130,10 +174,50 @@ function createOfferDialog(offerObject) {
     lodgeFeatures.appendChild(feature);
   }
   newOfferDialog.querySelector('.lodge__description').textContent = offerObject.offer.description;
-  newOfferDialog.querySelector('.dialog__panel').classList.add('dialog');
   return newOfferDialog;
 }
 
+function setActivePin(evt) {
+  deactivatePins();
+  evt.currentTarget.classList.add('pin--active');
+}
+
+function renderDialog(evt, offersDescriptionList) {
+  var index;
+  for (var i = 0; i < offersDescriptionList.length; i++) {
+    if (evt.currentTarget.querySelector('img').src.indexOf(offersDescriptionList[i].author.avatar) + 1) {
+      index = i;
+      break;
+    }
+  }
+  var dialogPanel = document.querySelector('.dialog__panel');
+  dialogPanel.parentElement.replaceChild(createOfferDialog(offers[index]), dialogPanel);
+  var avatar = offerDialog.querySelector('.dialog__title>img');
+  avatar.src = offersDescriptionList[index].author.avatar;
+}
+
+function addHandlersOnOfferDialog() {
+  dialogClose.addEventListener('click', onButtonClickCloseOfferDialog);
+  dialogClose.addEventListener('keydown', onEnterKeydownCloseOfferDialog);
+  document.addEventListener('keydown', onEscKeydownCloseOfferDialog);
+}
+
+function removeHandlersOnOfferDialog() {
+  dialogClose.removeEventListener('click', onButtonClickCloseOfferDialog);
+  dialogClose.removeEventListener('keydown', onEnterKeydownCloseOfferDialog);
+  document.removeEventListener('keydown', onEscKeydownCloseOfferDialog);
+}
+
+function isCertainKeyDown(evt, certainKeyCode) {
+  return evt.keyCode === certainKeyCode;
+}
+
+function activatePinAndShowOfferDialog(evt) {
+  setActivePin(evt);
+  renderDialog(evt, offers);
+  showOfferDialog();
+  addHandlersOnOfferDialog(evt);
+}
 
 for (var i = 0; i < offers.length; i++) {
   fragment.appendChild(createPin(offers[i]));
@@ -141,4 +225,14 @@ for (var i = 0; i < offers.length; i++) {
 
 pinMap.appendChild(fragment);
 
-offerDialog.parentElement.replaceChild(newOfferDialogElement, offerDialog);
+var pins = pinMap.querySelectorAll('.pin');
+for (i = 0; i < pins.length; i++) {
+  pins[i].addEventListener('click', function (evt) {
+    activatePinAndShowOfferDialog(evt);
+  });
+  pins[i].addEventListener('keydown', function (evt) {
+    if (isCertainKeyDown(evt, ENTER_KEY_CODE)) {
+      activatePinAndShowOfferDialog(evt);
+    }
+  });
+}
