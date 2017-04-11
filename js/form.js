@@ -8,7 +8,9 @@
   var inputOfferTimeIn = noticeForm.querySelector('#time');
   var inputOfferRoomsNumber = noticeForm.querySelector('#room_number');
   var inputOfferCapacity = noticeForm.querySelector('#capacity');
+  var inputOfferAdress = noticeForm.querySelector('#address');
   var submitButtonInputOffer = noticeForm.querySelector('.form__submit');
+  var mainPin = document.querySelector('.pin__main');
 
   var MIN_PRICE = 1000;
   var MAX_PRICE = 1000000;
@@ -55,6 +57,14 @@
     inputOfferTitle,
     inputOfferPrice
   ];
+
+  var onMouseMove = function () {
+    changeInputOfferAdress(mainPin);
+  };
+
+  inputOfferAdress.addEventListener('change', function () {
+    changeMainPinPosition();
+  });
 
   inputOfferPrice.addEventListener('change', function () {
     changeInputOfferType();
@@ -104,6 +114,16 @@
 
   inputOfferPrice.addEventListener('change', function () {
     recolerExInvalid(inputOfferPrice);
+  });
+
+  changeInputOfferAdress(mainPin);
+
+  mainPin.addEventListener('mousedown', function () {
+    mainPin.addEventListener('mousemove', onMouseMove);
+  });
+
+  mainPin.addEventListener('mouseup', function () {
+    mainPin.removeEventListener('mousemove', onMouseMove);
   });
 
   function isNecessaryOption(selectOption, textToCompare) {
@@ -176,6 +196,37 @@
       changelOptionSelected(inputOfferRoomsNumber, ROOMS.one);
     } else if (isOptionSelected(inputOfferCapacity, GUESTS.three)) {
       changelOptionSelected(inputOfferRoomsNumber, ROOMS.two);
+    }
+  }
+
+  function changeInputOfferAdress(draggedElement) {
+    inputOfferAdress.value = 'x: ' + (draggedElement.offsetLeft + draggedElement.offsetWidth / 2) + ', y: ' + (draggedElement.offsetTop + draggedElement.offsetHeight);
+  }
+
+  function getSubstringAfterSymbols(str, stringTosearch) {
+    if (str.indexOf(stringTosearch) + 1) {
+      var index = str.indexOf(stringTosearch) + stringTosearch.length;
+      var substring = str.slice(index);
+      return substring;
+    } else {
+      return false;
+    }
+  }
+
+  function getTopPositionValue(elementToPosition, coords) {
+    return coords - elementToPosition.offsetHeight;
+  }
+
+  function getLeftPositionValue(elementToPosition, coords) {
+    return coords - elementToPosition.offsetWidth / 2;
+  }
+
+  function changeMainPinPosition() {
+    if (getSubstringAfterSymbols(inputOfferAdress.value, 'y: ') && getTopPositionValue(mainPin, parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'y: '), 10))) {
+      mainPin.style.top = getTopPositionValue(mainPin, parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'y: '), 10)) + 'px';
+    }
+    if (getSubstringAfterSymbols(inputOfferAdress.value, 'x: ')) {
+      mainPin.style.left = getLeftPositionValue(mainPin, parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'x: '), 10)) + 'px';
     }
   }
 

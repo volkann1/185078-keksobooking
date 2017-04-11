@@ -3,6 +3,10 @@
   var offerDialog = document.querySelector('#offer-dialog');
   var dialogClose = offerDialog.querySelector('.dialog__close');
   var pinMap = document.querySelector('.tokyo__pin-map');
+  var mainPin = pinMap.querySelector('.pin__main');
+  var tokyo = document.querySelector('.tokyo');
+  var mapImageTop = 100;
+  var filtersElement = tokyo.querySelector('.tokyo__filters-container');
 
   var onButtonClickCloseOfferDialog = function (evt) {
     evt.preventDefault();
@@ -27,6 +31,8 @@
       removeHandlersOnOfferDialog();
     }
   };
+
+  dragAndDrop(mainPin, tokyo, filtersElement.offsetHeight, mapImageTop);
 
   function showOfferDialog() {
     offerDialog.classList.remove('hidden');
@@ -78,5 +84,39 @@
   function setActivePin(evt) {
     deactivatePins();
     evt.currentTarget.classList.add('pin--active');
+  }
+
+  function dragAndDrop(draggedElement, parentElement, minBottom, maxTop) {
+    draggedElement.addEventListener('mousedown', function (evt) {
+      evt.preventDefault();
+      var startCoords = {
+        x: evt.clientX,
+        y: evt.clientY
+      };
+      var onMousemove = function (moveEvt) {
+        moveEvt.preventDefault();
+        var shift = {
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY
+        };
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+        if (draggedElement.offsetTop - shift.y + draggedElement.offsetHeight < parentElement.offsetHeight - minBottom && draggedElement.offsetTop - shift.y > maxTop) {
+          draggedElement.style.top = (draggedElement.offsetTop - shift.y) + 'px';
+        }
+        if (draggedElement.offsetLeft - shift.x + draggedElement.offsetWidth < parentElement.offsetWidth && draggedElement.offsetLeft - shift.x > 0) {
+          draggedElement.style.left = (draggedElement.offsetLeft - shift.x) + 'px';
+        }
+      };
+      var onMouseup = function (upEvt) {
+        upEvt.preventDefault();
+        document.removeEventListener('mousemove', onMousemove);
+        document.removeEventListener('mouseup', onMouseup);
+      };
+      document.addEventListener('mousemove', onMousemove);
+      document.addEventListener('mouseup', onMouseup);
+    });
   }
 })();
