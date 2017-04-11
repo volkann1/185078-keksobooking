@@ -410,6 +410,8 @@ inputOfferCapacity.addEventListener('change', function () {
 });
 
 submitButtonInputOffer.addEventListener('click', function (evt) {
+  noticeForm.removeAttribute('novalidate');
+  inputOfferTitle.removeAttribute('formnovalidate');
   if (showAllInvalid(checkedElements)) {
     noticeForm.submit();
   } else {
@@ -417,8 +419,11 @@ submitButtonInputOffer.addEventListener('click', function (evt) {
   }
 });
 
+
 submitButtonInputOffer.addEventListener('keydown', function (evt) {
-  if (isCertainKeyDown(evt, ENTER_KEY_CODE)) {
+  if (window.utils.isEnterKeyDown(evt)) {
+    noticeForm.removeAttribute('novalidate');
+    inputOfferTitle.removeAttribute('formnovalidate');
     if (showAllInvalid(checkedElements)) {
       noticeForm.submit();
     } else {
@@ -429,6 +434,11 @@ submitButtonInputOffer.addEventListener('keydown', function (evt) {
 
 inputOfferTitle.addEventListener('change', function () {
   recolerExInvalid(inputOfferTitle);
+});
+
+inputOfferTitle.addEventListener('input', function () {
+  noticeForm.setAttribute('novalidate', '');
+  inputOfferTitle.setAttribute('formnovalidate', '');
 });
 
 inputOfferPrice.addEventListener('change', function () {
