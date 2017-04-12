@@ -34,10 +34,6 @@
 
   dragAndDrop(mainPin, tokyo, filtersElement.offsetHeight, mapImageTop);
 
-  function showOfferDialog() {
-    offerDialog.classList.remove('hidden');
-  }
-
   function hideOfferDialog() {
     offerDialog.classList.add('hidden');
   }
@@ -54,23 +50,17 @@
     document.removeEventListener('keydown', onEscKeydownCloseOfferDialog);
   }
 
-  function activatePinAndShowOfferDialog(evt) {
+  function activatePinAndOfferDialog(evt) {
     setActivePin(evt);
     window.renderDialog(evt, window.offers);
-    showOfferDialog();
     addHandlersOnOfferDialog(evt);
   }
 
   var pins = pinMap.querySelectorAll('.pin:not(.pin__main)');
+
+
   for (var i = 0; i < pins.length; i++) {
-    pins[i].addEventListener('click', function (evt) {
-      activatePinAndShowOfferDialog(evt);
-    });
-    pins[i].addEventListener('keydown', function (evt) {
-      if (window.utils.isEnterKeyDown(evt)) {
-        activatePinAndShowOfferDialog(evt);
-      }
-    });
+    window.showCard(pins[i], offerDialog, activatePinAndOfferDialog);
   }
 
   function deactivatePins() {
