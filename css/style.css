@@ -663,3 +663,14 @@ select option:hover {
 .notice__form .invalid {
   border-color:#ff6547;
 }
+
+.error-message {
+  z-index: 100;
+  margin: 0 auto;
+  text-align: center;
+  background-color: red;
+  left: 0;
+  right: 0;
+  position: absolute;
+  font-size: 30px;
+}
