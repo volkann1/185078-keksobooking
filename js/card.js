@@ -12,6 +12,8 @@ window.renderDialog = (function () {
   function createOfferDialog(offerObject) {
     var newOfferDialog = lodgeTemplate.cloneNode(true);
     var lodgeFeatures = newOfferDialog.querySelector('.lodge__features');
+    var fragment = document.createDocumentFragment();
+    var photosBlock = newOfferDialog.querySelector('.lodge__photos');
     newOfferDialog.querySelector('.lodge__title').textContent = offerObject.offer.title;
     newOfferDialog.querySelector('.lodge__address').textContent = offerObject.offer.address;
     newOfferDialog.querySelector('.lodge__price').textContent = offerObject.offer.price + '₽/ночь';
@@ -26,19 +28,24 @@ window.renderDialog = (function () {
       lodgeFeatures.appendChild(feature);
     }
     newOfferDialog.querySelector('.lodge__description').textContent = offerObject.offer.description;
+    for (i = 0; i < offerObject.offer.photos.length; i++) {
+      var link = document.createElement('a');
+      link.href = offerObject.offer.photos[i];
+      var image = document.createElement('img');
+      image.src = offerObject.offer.photos[i];
+      image.width = 52;
+      image.height = 42;
+      link.appendChild(image);
+      fragment.appendChild(link);
+    }
+    photosBlock.appendChild(fragment);
     return newOfferDialog;
   }
 
   return function (evt, offersDescriptionList) {
-    var index;
-    for (var i = 0; i < offersDescriptionList.length; i++) {
-      if (evt.currentTarget.querySelector('img').src.indexOf(offersDescriptionList[i].author.avatar) + 1) {
-        index = i;
-        break;
-      }
-    }
+    var index = evt.currentTarget.dataset.index;
     var dialogPanel = document.querySelector('.dialog__panel');
-    dialogPanel.parentElement.replaceChild(createOfferDialog(window.offers[index]), dialogPanel);
+    dialogPanel.parentElement.replaceChild(createOfferDialog(offersDescriptionList[index]), dialogPanel);
     var avatar = offerDialog.querySelector('.dialog__title>img');
     avatar.src = offersDescriptionList[index].author.avatar;
   };

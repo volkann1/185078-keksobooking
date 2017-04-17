@@ -11,6 +11,7 @@
   var inputOfferAdress = noticeForm.querySelector('#address');
   var submitButtonInputOffer = noticeForm.querySelector('.form__submit');
   var mainPin = document.querySelector('.pin__main');
+  // var userAvatarDropzone = noticeForm.querySelector('.upload');
 
   var MAX_HEIGHT = 580;
   var MAX_WIDTH = 1200 - mainPin.offsetWidth / 2;

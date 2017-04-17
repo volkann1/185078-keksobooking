@@ -1,21 +1,21 @@
 'use strict';
-(function () {
-  var fragment = document.createDocumentFragment();
-  var pinMap = document.querySelector('.tokyo__pin-map');
-
+window.createPins = (function () {
   function createPin(offer) {
     var pin = document.createElement('div');
     pin.innerHTML = '<img src="' + offer.author.avatar + '" style = "max-width:38px;">';
     pin.classList.add('pin');
     pin.tabIndex = '0';
-    pin.style.left = offer.location.x + 28 + 'px';
-    pin.style.top = offer.location.y + 75 + 'px';
+    pin.style.left = offer.location.x + pin.offsetWidth / 2 + 'px';
+    pin.style.top = offer.location.y + pin.offsetHeight + 'px';
     return pin;
   }
-
-  for (var i = 0; i < window.offers.length; i++) {
-    fragment.appendChild(createPin(window.offers[i]));
-  }
-
-  pinMap.appendChild(fragment);
+  return function (offersList) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < offersList.length; i++) {
+      var newPin = createPin(offersList[i]);
+      newPin.dataset.index = i;
+      fragment.appendChild(newPin);
+    }
+    return fragment;
+  };
 })();

@@ -7,6 +7,15 @@
   var tokyo = document.querySelector('.tokyo');
   var mapImageTop = 100;
   var filtersElement = tokyo.querySelector('.tokyo__filters-container');
+  var wizardsData;
+  var pins;
+
+  var URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/data';
+
+  var node = document.createElement('div');
+  node.classList.add('error-message');
+  node.classList.add('hidden');
+  document.body.insertAdjacentElement('afterbegin', node);
 
   var onButtonClickCloseOfferDialog = function (evt) {
     evt.preventDefault();
@@ -32,6 +41,22 @@
     }
   };
 
+  var successHandler = function (data) {
+    wizardsData = data;
+    pinMap.appendChild(window.createPins(data));
+    pins = pinMap.querySelectorAll('.pin:not(.pin__main)');
+    for (var i = 0; i < pins.length; i++) {
+      window.showCard(pins[i], offerDialog, activatePinAndOfferDialog);
+    }
+  };
+
+  var errorHandler = function (massage) {
+    node.textContent = massage;
+    node.classList.remove('hidden');
+  };
+
+  window.load(URL, successHandler, errorHandler);
+
   dragAndDrop(mainPin, tokyo, filtersElement.offsetHeight, mapImageTop);
 
   function hideOfferDialog() {
@@ -52,19 +77,12 @@
 
   function activatePinAndOfferDialog(evt) {
     setActivePin(evt);
-    window.renderDialog(evt, window.offers);
+    window.renderDialog(evt, wizardsData);
     addHandlersOnOfferDialog(evt);
   }
 
-  var pins = pinMap.querySelectorAll('.pin:not(.pin__main)');
-
-
-  for (var i = 0; i < pins.length; i++) {
-    window.showCard(pins[i], offerDialog, activatePinAndOfferDialog);
-  }
-
   function deactivatePins() {
-    for (i = 0; i < pins.length; i++) {
+    for (var i = 0; i < pins.length; i++) {
       if (pins[i].classList.contains('pin--active')) {
         pins[i].classList.remove('pin--active');
       }
