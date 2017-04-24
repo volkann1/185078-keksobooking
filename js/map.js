@@ -7,8 +7,8 @@
   var tokyo = document.querySelector('.tokyo');
   var mapImageTop = 100;
   var filtersElement = tokyo.querySelector('.tokyo__filters-container');
-  var wizardsData;
-  var pins;
+  var pins = [];
+  var activePin;
 
   var URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/data';
 
@@ -20,14 +20,14 @@
   var onButtonClickCloseOfferDialog = function (evt) {
     evt.preventDefault();
     hideOfferDialog();
-    deactivatePins();
+    deactivatePin();
     removeHandlersOnOfferDialog();
   };
 
   var onEscKeydownCloseOfferDialog = function (evt) {
     if (window.utils.isEscKeyDown(evt)) {
       hideOfferDialog();
-      deactivatePins();
+      deactivatePin();
       removeHandlersOnOfferDialog();
     }
   };
@@ -36,23 +36,27 @@
     if (window.utils.isEnterKeyDown(evt)) {
       evt.preventDefault();
       hideOfferDialog();
-      deactivatePins();
+      deactivatePin();
       removeHandlersOnOfferDialog();
     }
   };
 
   var successHandler = function (data) {
-    wizardsData = data;
-    pinMap.appendChild(window.createPins(data));
-    pins = pinMap.querySelectorAll('.pin:not(.pin__main)');
-    for (var i = 0; i < pins.length; i++) {
-      window.showCard(pins[i], offerDialog, activatePinAndOfferDialog);
-    }
+    pins = data;
+    pinMap.appendChild(window.createPins(pins));
+    window.showCard(pinMap, 'pin', 'pin__main', offerDialog, activatePinAndOfferDialog);
+    window.filterAndUpdatePins();
   };
 
   var errorHandler = function (massage) {
     node.textContent = massage;
     node.classList.remove('hidden');
+  };
+
+  window.hideOfferDialog = function () {
+    hideOfferDialog();
+    deactivatePin();
+    removeHandlersOnOfferDialog();
   };
 
   window.load(URL, successHandler, errorHandler);
@@ -75,23 +79,22 @@
     document.removeEventListener('keydown', onEscKeydownCloseOfferDialog);
   }
 
-  function activatePinAndOfferDialog(evt) {
-    setActivePin(evt);
-    window.renderDialog(evt, wizardsData);
+  function activatePinAndOfferDialog(evt, pinToActivate) {
+    window.renderDialog(evt, pins);
+    setActivePin(evt, pinToActivate);
     addHandlersOnOfferDialog(evt);
   }
 
-  function deactivatePins() {
-    for (var i = 0; i < pins.length; i++) {
-      if (pins[i].classList.contains('pin--active')) {
-        pins[i].classList.remove('pin--active');
-      }
+  function deactivatePin() {
+    if (activePin) {
+      activePin.classList.remove('pin--active');
     }
   }
 
-  function setActivePin(evt) {
-    deactivatePins();
-    evt.currentTarget.classList.add('pin--active');
+  function setActivePin(evt, pinToActivate) {
+    deactivatePin();
+    pinToActivate.classList.add('pin--active');
+    activePin = pinToActivate;
   }
 
   function dragAndDrop(draggedElement, parentElement, minBottom, maxTop) {
