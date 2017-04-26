@@ -55,14 +55,14 @@
 
   var filterBySelectChange = function (selectElement, key) {
     selectElement.addEventListener('change', function () {
-      window.debounce(function () {
-        for (var i = 0; i < selectElement.options.length; i++) {
-          var option = selectElement.options[i];
-          if (option.selected) {
-            filterProperties[key] = option.value;
-            break;
-          }
+      for (var i = 0; i < selectElement.options.length; i++) {
+        var option = selectElement.options[i];
+        if (option.selected) {
+          filterProperties[key] = option.value;
+          break;
         }
+      }
+      window.debounce(function () {
         window.filterAndUpdatePins();
       });
     });
@@ -70,12 +70,12 @@
 
   var filterByCheckboxChange = function (checkboxElement, key) {
     checkboxElement.addEventListener('change', function () {
+      if (checkboxElement.checked) {
+        filterProperties[key] = 'true';
+      } else {
+        filterProperties[key] = 'any';
+      }
       window.debounce(function () {
-        if (checkboxElement.checked) {
-          filterProperties[key] = 'true';
-        } else {
-          filterProperties[key] = 'any';
-        }
         window.filterAndUpdatePins();
       });
     });
