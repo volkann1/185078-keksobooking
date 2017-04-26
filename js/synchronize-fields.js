@@ -1,4 +1,5 @@
 'use strict';
+
 window.synchronizeFields = function (changingElement, elementToSynchronize, changingElementValues, elementToSynchronizeValues, callback) {
   if (typeof callback === 'function') {
     changingElement.addEventListener('change', function () {

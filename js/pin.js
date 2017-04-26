@@ -1,4 +1,5 @@
 'use strict';
+
 window.createPins = (function () {
   function createPin(offer) {
     var pin = document.createElement('div');

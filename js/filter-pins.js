@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var pinMap = document.querySelector('.tokyo__pin-map');
   var pinElements = pinMap.querySelectorAll('.pin:not(.pin__main)');
@@ -70,11 +71,7 @@
 
   var filterByCheckboxChange = function (checkboxElement, key) {
     checkboxElement.addEventListener('change', function () {
-      if (checkboxElement.checked) {
-        filterProperties[key] = 'true';
-      } else {
-        filterProperties[key] = 'any';
-      }
+      filterProperties[key] = checkboxElement.checked ? 'true' : 'any';
       window.debounce(function () {
         window.filterAndUpdatePins();
       });

@@ -1,4 +1,5 @@
 'use strict';
+
 window.renderDialog = (function () {
   var lodgeTemplate = document.querySelector('#lodge-template').content;
   var offerDialog = document.querySelector('#offer-dialog');

@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var noticeForm = document.querySelector('.notice__form');
   var inputOfferTitle = noticeForm.querySelector('#title');
@@ -11,7 +12,6 @@
   var inputOfferAdress = noticeForm.querySelector('#address');
   var submitButtonInputOffer = noticeForm.querySelector('.form__submit');
   var mainPin = document.querySelector('.pin__main');
-  // var userAvatarDropzone = noticeForm.querySelector('.upload');
 
   var MAX_HEIGHT = 580;
   var MAX_WIDTH = 1200 - mainPin.offsetWidth / 2;
@@ -80,9 +80,23 @@
     element.value = value;
   };
 
+  var isYCord = getSubstringAfterSymbols(inputOfferAdress.value, 'y: ');
+  var isXCord = getSubstringAfterSymbols(inputOfferAdress.value, 'x: ');
+
+  var isYCordGreater = getTopPositionValue(mainPin, parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'y: '), 10)) > MAX_HEIGHT;
+  var isYCordLess = parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'y: '), 10) < 100;
+
+  var isYCordOutOfRange = isYCordGreater || isYCordLess;
+
+  var isXCordGreater = getLeftPositionValue(mainPin, parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'x: '), 10)) > MAX_WIDTH;
+
+  var isXCordLess = parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'x: '), 10) < 0;
+
+  var isXCordOutOfRange = isXCordGreater || isXCordLess;
+
   inputOfferAdress.addEventListener('change', function () {
     changeMainPinPosition();
-    if (!getSubstringAfterSymbols(inputOfferAdress.value, 'y: ') || getTopPositionValue(mainPin, parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'y: '), 10)) > MAX_HEIGHT || parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'y: '), 10) < 100 || !getSubstringAfterSymbols(inputOfferAdress.value, 'x: ') || getLeftPositionValue(mainPin, parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'x: '), 10)) > MAX_WIDTH || parseInt(getSubstringAfterSymbols(inputOfferAdress.value, 'x: '), 10) < 0) {
+    if (!isYCord || isYCordOutOfRange || !isXCord || isXCordOutOfRange) {
       changeInputOfferAdress(mainPin);
     }
   });
@@ -96,18 +110,18 @@
   submitButtonInputOffer.addEventListener('click', function (evt) {
     if (showAllInvalid(checkedElements)) {
       noticeForm.submit();
-    } else {
-      showAllInvalid(checkedElements);
+      return;
     }
+    showAllInvalid(checkedElements);
   });
 
   submitButtonInputOffer.addEventListener('keydown', function (evt) {
     if (window.utils.isEnterKeyDown(evt)) {
       if (showAllInvalid(checkedElements)) {
         noticeForm.submit();
-      } else {
-        showAllInvalid(checkedElements);
+        return;
       }
+      showAllInvalid(checkedElements);
     }
   });
 

@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var offerDialog = document.querySelector('#offer-dialog');
   var dialogClose = offerDialog.querySelector('.dialog__close');
@@ -7,7 +8,7 @@
   var tokyo = document.querySelector('.tokyo');
   var mapImageTop = 100;
   var filtersElement = tokyo.querySelector('.tokyo__filters-container');
-  var pins = [];
+  var PINS = [];
   var activePin;
 
   var URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/keksobooking/data';
@@ -42,8 +43,8 @@
   };
 
   var successHandler = function (data) {
-    pins = data;
-    pinMap.appendChild(window.createPins(pins));
+    PINS = data;
+    pinMap.appendChild(window.createPins(PINS));
     window.showCard(pinMap, 'pin', 'pin__main', offerDialog, activatePinAndOfferDialog);
     window.filterAndUpdatePins();
   };
@@ -80,7 +81,7 @@
   }
 
   function activatePinAndOfferDialog(evt, pinToActivate) {
-    window.renderDialog(evt, pins);
+    window.renderDialog(evt, PINS);
     setActivePin(evt, pinToActivate);
     addHandlersOnOfferDialog(evt);
   }

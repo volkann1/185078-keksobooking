@@ -1,4 +1,5 @@
 'use strict';
+
 window.showCard = (function () {
   return function (elementToInteractParent, elementToInteractClass, elementToInteractExcludedClass, elementToShow, callback) {
     var elementToInteract;
