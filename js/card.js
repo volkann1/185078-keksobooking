@@ -43,10 +43,13 @@ window.renderDialog = (function () {
   }
 
   return function (evt, offersDescriptionList) {
-    var index = evt.currentTarget.dataset.index;
-    var dialogPanel = document.querySelector('.dialog__panel');
-    dialogPanel.parentElement.replaceChild(createOfferDialog(offersDescriptionList[index]), dialogPanel);
-    var avatar = offerDialog.querySelector('.dialog__title>img');
-    avatar.src = offersDescriptionList[index].author.avatar;
+    var currentPin = evt.target.classList.contains('pin') ? evt.target : evt.target.parentElement;
+    if (!currentPin.classList.contains('pin__main')) {
+      var index = currentPin.dataset.index;
+      var dialogPanel = document.querySelector('.dialog__panel');
+      dialogPanel.parentElement.replaceChild(createOfferDialog(offersDescriptionList[index]), dialogPanel);
+      var avatar = offerDialog.querySelector('.dialog__title>img');
+      avatar.src = offersDescriptionList[index].author.avatar;
+    }
   };
 })();
