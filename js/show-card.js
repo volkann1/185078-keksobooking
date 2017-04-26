@@ -13,7 +13,7 @@ window.showCard = (function () {
         elementToShow.classList.remove('hidden');
         if (typeof callback === 'function') {
           callback(evt, elementToInteract);
-        };
+        }
         elementToInteract = null;
       }
     });
