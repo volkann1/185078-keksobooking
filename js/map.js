@@ -122,7 +122,7 @@
           draggedElement.style.top = (draggedElement.offsetTop - shift.y) + 'px';
         }
         if (draggedElement.offsetLeft - shift.x + draggedElement.offsetWidth < parentElement.offsetWidth && draggedElement.offsetLeft - shift.x > 0) {
-          draggedElement.style.left = (draggedElement.offsetLeft - shift.x) + 'px';
+          draggedElement.style.left = (draggedElement.offsetLeft - shift.x ) + 'px';
         }
       };
       var onMouseup = function (upEvt) {

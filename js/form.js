@@ -14,7 +14,7 @@
   var mainPin = document.querySelector('.pin__main');
 
   var MAX_HEIGHT = 580;
-  var MAX_WIDTH = 1200 - mainPin.offsetWidth / 2;
+  var MAX_WIDTH = 1200 - Math.round(mainPin.offsetWidth / 2);
 
   var MIN_PRICE = 1000;
   var MAX_PRICE = 1000000;
@@ -144,7 +144,7 @@
   });
 
   function changeInputOfferAdress(draggedElement) {
-    inputOfferAdress.value = 'x: ' + (draggedElement.offsetLeft + draggedElement.offsetWidth / 2) + ', y: ' + (draggedElement.offsetTop + draggedElement.offsetHeight);
+    inputOfferAdress.value = 'x: ' + (draggedElement.offsetLeft + Math.round(draggedElement.offsetWidth / 2)) + ', y: ' + (draggedElement.offsetTop + draggedElement.offsetHeight);
   }
 
   function getSubstringAfterSymbols(str, stringTosearch) {
@@ -162,7 +162,7 @@
   }
 
   function getLeftPositionValue(elementToPosition, coords) {
-    return coords - elementToPosition.offsetWidth / 2;
+    return coords - Math.round(elementToPosition.offsetWidth / 2);
   }
 
   function changeMainPinPosition() {
