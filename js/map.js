@@ -6,7 +6,7 @@
   var pinMap = document.querySelector('.tokyo__pin-map');
   var mainPin = pinMap.querySelector('.pin__main');
   var tokyo = document.querySelector('.tokyo');
-  var mapImageTop = 100;
+  var mapImageTop = 100; // px
   var filtersElement = tokyo.querySelector('.tokyo__filters-container');
   var PINS = [];
   var activePin;
@@ -46,7 +46,10 @@
     PINS = data;
     pinMap.appendChild(window.createPins(PINS));
     window.showCard(pinMap, 'pin', 'pin__main', offerDialog, activatePinAndOfferDialog);
-    window.filterAndUpdatePins();
+    var pinElements = pinMap.querySelectorAll('.pin:not(.pin__main)');
+    [].slice.call(pinElements, 3).forEach(function (it) {
+      it.classList.add('hidden');
+    });
   };
 
   var errorHandler = function (massage) {

@@ -30,13 +30,14 @@ window.utils = (function () {
     },
 
     generateArray: function (arr, minLength, maxLength) {
-      var newArray = [];
       arrCopy = arr.slice();
-      for (var i = 0; i < window.utils.getRandomNumber(minLength, maxLength); i++) {
+      var newArrLength = window.utils.getRandomNumber(minLength, maxLength);
+      var newArray = new Array(newArrLength);
+      newArray.forEach(function (it) {
         var index = window.utils.getRandomNumber(0, arrCopy.length - 1);
-        newArray[i] = arrCopy[index];
+        it = arrCopy[index];
         arrCopy.splice(index, 1);
-      }
+      });
       return newArray;
     },
 
